@@ -1,0 +1,224 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+type MediaSizes {
+  card      MediaSizesCard
+  tablet    MediaSizesTablet
+  thumbnail MediaSizesThumbnail
+}
+
+type MediaSizesCard {
+  filename String
+  filesize Int
+  height   Int
+  mimeType String
+  width    Int
+}
+
+type MediaSizesTablet {
+  filename String
+  filesize Int
+  height   Int
+  mimeType String
+  width    Int
+}
+
+type MediaSizesThumbnail {
+  filename String
+  filesize Int
+  height   Int
+  mimeType String
+  width    Int
+}
+
+type PayloadPreferencesUser {
+  relationTo String
+  value      String
+}
+
+type PayloadPreferencesValue {
+  columns PayloadPreferencesValueColumns[]
+  open    Boolean?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  sort    Json?
+}
+
+type PayloadPreferencesValueColumns {
+  accessor String
+  active   Boolean?
+}
+
+type ProductsLayout {
+  blockType        String
+  columns          ProductsLayoutColumns[]
+  id               String
+  invertBackground Boolean
+  media            String?
+  position         String?
+}
+
+type ProductsLayoutColumns {
+  enableLink Boolean
+  id         String
+  link       ProductsLayoutColumnsLink
+  size       String
+}
+
+type ProductsLayoutColumnsLink {
+  appearance String
+  label      String
+  type       String
+}
+
+type ProductsVersionsVersion {
+  status        String                          @map("_status")
+  categories    String[]
+  createdAt     DateTime                        @db.Date
+  description   String
+  enablePaywall Boolean
+  image         String
+  layout        ProductsVersionsVersionLayout[]
+  publishedOn   DateTime                        @db.Date
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  reviews       Json?
+  skipSync      Boolean
+  slug          String
+  title         String
+  updatedAt     DateTime                        @db.Date
+}
+
+type ProductsVersionsVersionLayout {
+  blockType        String
+  columns          ProductsVersionsVersionLayoutColumns[]
+  id               String
+  invertBackground Boolean?
+  media            String?
+  position         String?
+}
+
+type ProductsVersionsVersionLayoutColumns {
+  enableLink Boolean
+  id         String
+  link       ProductsVersionsVersionLayoutColumnsLink
+  size       String
+}
+
+type ProductsVersionsVersionLayoutColumnsLink {
+  appearance String
+  label      String
+  type       String
+}
+
+model products_versions {
+  id        String                  @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int                     @map("__v")
+  createdAt DateTime                @db.Date
+  latest    Boolean?
+  parent    String
+  updatedAt DateTime                @db.Date
+  version   ProductsVersionsVersion
+
+  @@index([parent], map: "parent_1")
+  @@index([version.slug], map: "version.slug_1")
+  @@index([version.createdAt], map: "version.createdAt_1")
+  @@index([createdAt], map: "createdAt_1")
+  @@index([updatedAt], map: "updatedAt_1")
+  @@index([latest], map: "latest_1")
+  @@map("_products_versions")
+}
+
+model categories {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int      @map("__v")
+  createdAt DateTime @db.Date
+  title     String
+  updatedAt DateTime @db.Date
+
+  @@index([createdAt], map: "createdAt_1")
+}
+
+model media {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int        @map("__v")
+  alt       String
+  createdAt DateTime   @db.Date
+  filename  String     @unique(map: "filename_1")
+  filesize  Int
+  height    Int
+  mimeType  String
+  sizes     MediaSizes
+  updatedAt DateTime   @db.Date
+  width     Int
+
+  @@index([createdAt], map: "createdAt_1")
+  @@index([sizes.thumbnail.filename], map: "sizes.thumbnail.filename_1")
+  @@index([sizes.card.filename], map: "sizes.card.filename_1")
+  @@index([sizes.tablet.filename], map: "sizes.tablet.filename_1")
+}
+
+model payload_migrations {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  /// Field referred in an index, but found no data to define the type.
+  createdAt Json?
+
+  @@index([createdAt], map: "createdAt_1")
+  @@map("payload-migrations")
+}
+
+model payload_preferences {
+  id        String                   @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int                      @map("__v")
+  createdAt DateTime                 @db.Date
+  key       String
+  updatedAt DateTime                 @db.Date
+  user      PayloadPreferencesUser
+  value     PayloadPreferencesValue?
+
+  @@index([createdAt], map: "createdAt_1")
+  @@index([user], map: "user_1")
+  @@index([key], map: "key_1")
+  @@map("payload-preferences")
+}
+
+model products {
+  id            String           @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int              @map("__v")
+  status        String           @map("_status")
+  categories    String[]
+  createdAt     DateTime         @db.Date
+  description   String
+  enablePaywall Boolean
+  image         String
+  layout        ProductsLayout[]
+  publishedOn   DateTime         @db.Date
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  reviews       Json?
+  skipSync      Boolean
+  slug          String
+  title         String
+  productEmbeddings Float[]
+  updatedAt     DateTime         @db.Date
+
+  @@index([createdAt], map: "createdAt_1")
+  @@index([slug], map: "slug_1")
+}
+
+model users {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int      @map("__v")
+  createdAt     DateTime @db.Date
+  email         String   @unique(map: "email_1")
+  hash          String
+  loginAttempts Int
+  roles         String[]
+  salt          String
+  updatedAt     DateTime @db.Date
+
+  @@index([createdAt], map: "createdAt_1")
+}
