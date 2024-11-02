@@ -33,7 +33,7 @@ export default function ProductComponent({ product, layoutType, addItemToCart }:
 
     if (layoutType === 'grid') return (
         <Link href={`/p/${product.slug}-${product.id}`} className='flex flex-col items-center border border-slate-200 w-full backdrop-blur-sm rounded-lg p-2 transition-all cursor-pointer hover:border-slate-500' key={product.id}>
-            <Image src={product.image?.thumbnailURL || ""} alt={product.image?.alt || ""} width={200} height={200} className='w-[200px] aspect-square object-contain rounded-lg' />
+            <Image src={product.image?.thumbnailURL || ""} alt={product.image?.alt || ""} width={200} height={200} unoptimized className='w-[200px] aspect-square object-contain rounded-lg' />
             <div className='py-2 px-4 flex flex-col w-full'>
                 <div className='leading-none flex flex-col gap-1 flex-grow'>
                     <p className='text-slate-600'>{product.producer.title}</p>
