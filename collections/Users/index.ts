@@ -39,13 +39,13 @@ export const Users: CollectionConfig = {
             generateEmailHTML: async ({ req, token, user }) => {
                 const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/verify?token=${token}`
                 console.log('URL', url)
-                await resend.emails.send({
-                    from: 'NoteNook <notenook@kamilmarczak.pl>',
-                    to: [user.email],
-                    subject: 'Confirm your email address',
-                    react: RegisterTemplate({ name: user.name, link: url }),
-                    html: '', // Add the html property here
-                });
+                // await resend.emails.send({
+                //     from: 'NoteNook <notenook@kamilmarczak.pl>',
+                //     to: [user.email],
+                //     subject: 'Confirm your email address',
+                //     react: RegisterTemplate({ name: user.name, link: url }),
+                //     html: '', // Add the html property here
+                // });
 
                 return `Hey ${user.email}, verify your email by clicking here: ${url}`
             },

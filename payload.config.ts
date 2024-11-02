@@ -5,7 +5,7 @@ import { buildConfig } from 'payload/config';
 import sharp from 'sharp'
 import { fileURLToPath } from 'url';
 import { stripePlugin } from '@payloadcms/plugin-stripe'
-
+import { resendAdapter } from '@payloadcms/email-resend'
 import { Users } from './collections/Users';
 import { Media } from './collections/Media';
 import Categories from './collections/Categories';
@@ -53,12 +53,17 @@ export default buildConfig({
             },
         }),
     ],
-    secret: process.env.PAYLOAD_SECRET || '',
+    secret: process.env.PAYLOAD_SECRET!,
     typescript: {
         outputFile: path.resolve(dirname, 'payload-types.ts'),
     },
     db: mongooseAdapter({
-        url: process.env.DATABASE_URI || '',
+        url: process.env.DATABASE_URI!,
     }),
-    sharp
+    sharp,
+    email: resendAdapter({
+        defaultFromAddress: 'netnook@kamilmarczak.pl',
+        defaultFromName: 'NetNook',
+        apiKey: process.env.RESEND_API_KEY!,
+    }),
 });
